@@ -25,5 +25,10 @@
     "turbo": "2.1.1",
     "typescript": "^5.5.4"
   },
-  "packageManager": "bun@1.1.26"
+  "packageManager": "bun@1.1.26",
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.41.0"
+  }
 }

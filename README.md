@@ -26,7 +26,8 @@ Everything you need to build a production ready SaaS, it's a opinionated stack b
 [TailwindCSS](https://tailwindcss.com/) - Styling<br>
 [Shadcn](https://ui.shadcn.com/) - UI components<br>
 [TypeScript](https://www.typescriptlang.org/) - Type safety<br>
-[Supabase](https://supabase.com/) - Authentication, database, storage<br>
+[Better Auth](https://www.better-auth.com/) - Authentication<br>
+[Drizzle ORM](https://orm.drizzle.team/) - Type-safe ORM<br>
 [Upstash](https://upstash.com/) - Cache and rate limiting<br>
 [React Email](https://react.email/) - Email templates<br>
 [Resend](https://resend.com/) - Email delivery<br>
@@ -45,17 +46,18 @@ Everything you need to build a production ready SaaS, it's a opinionated stack b
 ```
 .
 ├── apps                         # App workspace
-│    ├── api                     # Supabase (API, Auth, Storage, Realtime, Edge Functions)
+│    ├── api                     # API routes and server-side logic
 │    ├── app                     # App - your product
 │    ├── web                     # Marketing site
 │    └── ...
 ├── packages                     # Shared packages between apps
 │    ├── analytics               # OpenPanel analytics
+│    ├── auth                    # Better Auth configuration
+│    ├── db                      # Drizzle ORM schema and queries
 │    ├── email                   # React email library
 │    ├── jobs                    # Trigger.dev background jobs
 │    ├── kv                      # Upstash rate-limited key-value storage
 │    ├── logger                  # Logger library
-│    ├── supabase                # Supabase - Queries, Mutations, Clients
 │    └── ui                      # Shared UI components (Shadcn)
 ├── tooling                      # are the shared configuration that are used by the apps and packages
 │    └── typescript              # Shared TypeScript configuration
@@ -70,11 +72,12 @@ Everything you need to build a production ready SaaS, it's a opinionated stack b
 
 Bun<br>
 Docker<br>
+PostgreSQL<br>
 Upstash<br>
 Dub<br>
 Trigger.dev<br>
 Resend<br>
-Supabase<br>
+Better Auth<br>
 Sentry<br>
 OpenPanel<br>
 
@@ -111,8 +114,9 @@ bun dev:api // starts the api in development mode
 bun dev:email // starts the email app in development mode
 
 // Database
-bun migrate // run migrations
-bun seed // run seed
+bun db:push // push schema changes to database
+bun db:studio // open Drizzle Studio to manage your database
+bun db:seed // run seed data
 ```
 
 ## How to use
@@ -122,9 +126,7 @@ With this, you have a great starting point for your own project.
 
 ## Deploy to Vercel
 
-Vercel deployment will guide you through creating a Supabase account and project.
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmidday-ai%2Fv1&env=RESEND_API_KEY,UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN,SENTRY_AUTH_TOKEN,NEXT_PUBLIC_SENTRY_DSN,SENTRY_ORG,SENTRY_PROJECT,DUB_API_KEY,NEXT_PUBLIC_OPENPANEL_CLIENT_ID,OPENPANEL_SECRET_KEY&project-name=create-v1&repository-name=create-v1&redirect-url=https%3A%2F%2Fv1.run&demo-title=Create%20v1&demo-description=An%20open-source%20starter%20kit%20based%20on%20Midday.&demo-url=https%3A%2F%2Fv1.run&demo-image=https%3A%2F%2Fv1.run%2Fopengraph-image.png&integration-ids=oac_VqOgBHqhEoFTPzGkPd7L0iH6)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fmidday-ai%2Fv1&env=RESEND_API_KEY,UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN,SENTRY_AUTH_TOKEN,NEXT_PUBLIC_SENTRY_DSN,SENTRY_ORG,SENTRY_PROJECT,DUB_API_KEY,NEXT_PUBLIC_OPENPANEL_CLIENT_ID,OPENPANEL_SECRET_KEY,DATABASE_URL,BETTER_AUTH_SECRET&project-name=create-v1&repository-name=create-v1&redirect-url=https%3A%2F%2Fv1.run&demo-title=Create%20v1&demo-description=An%20open-source%20starter%20kit%20based%20on%20Midday.&demo-url=https%3A%2F%2Fv1.run&demo-image=https%3A%2F%2Fv1.run%2Fopengraph-image.png)
 
 ## Recognition
 

@@ -1,4 +1,4 @@
-import { getPosts } from "@v1/supabase/queries";
+import { getPosts } from "@v1/db/queries";
 
 export async function PostsServer() {
   const { data } = await getPosts();

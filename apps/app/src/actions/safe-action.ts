@@ -1,9 +1,6 @@
-import * as Sentry from "@sentry/nextjs";
 import { setupAnalytics } from "@v1/analytics/server";
-import { ratelimit } from "@v1/kv/ratelimit";
+import { auth } from "@v1/auth/server";
 import { logger } from "@v1/logger";
-import { getUser } from "@v1/supabase/queries";
-import { createClient } from "@v1/supabase/server";
 import {
   DEFAULT_SERVER_ERROR_MESSAGE,
   createSafeActionClient,
@@ -55,37 +52,36 @@ export const authActionClient = actionClientWithMeta
     return result;
   })
   .use(async ({ next, metadata }) => {
-    const ip = headers().get("x-forwarded-for");
+    const ip = await headers().get("x-forwarded-for");
 
-    const { success, remaining } = await ratelimit.limit(
-      `${ip}-${metadata.name}`,
-    );
+    // const { success, remaining } = await ratelimit.limit(
+    //   `${ip}-${metadata.name}`,
+    // );
 
-    if (!success) {
-      throw new Error("Too many requests");
-    }
+    // if (!success) {
+    //   throw new Error("Too many requests");
+    // }
 
     return next({
       ctx: {
-        ratelimit: {
-          remaining,
-        },
+        // ratelimit: {
+        //   remaining,
+        // },
       },
     });
   })
   .use(async ({ next, metadata }) => {
-    const {
-      data: { user },
-    } = await getUser();
-    const supabase = createClient();
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
 
-    if (!user) {
+    if (!session) {
       throw new Error("Unauthorized");
     }
 
     if (metadata) {
       const analytics = await setupAnalytics({
-        userId: user.id,
+        userId: session.user.id,
       });
 
       if (metadata.track) {
@@ -93,12 +89,9 @@ export const authActionClient = actionClientWithMeta
       }
     }
 
-    return Sentry.withServerActionInstrumentation(metadata.name, async () => {
-      return next({
-        ctx: {
-          supabase,
-          user,
-        },
-      });
+    return next({
+      ctx: {
+        session,
+      },
     });
   });
