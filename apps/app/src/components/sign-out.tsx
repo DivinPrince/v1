@@ -10,7 +10,7 @@ export function SignOut() {
       fetchOptions: {
         onSuccess() {
           console.log("success");
-          window.location.href = window.location.href;
+          window.location.href = "/";
         },
       },
     });
